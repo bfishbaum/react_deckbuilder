@@ -1,0 +1,315 @@
+.App {
+	text-align: center;
+	margin: 30px auto;
+	height: 100%;
+	display: flexbox;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.App-logo {
+	height: 40vmin;
+	pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.App-logo {
+		animation: App-logo-spin infinite 20s linear;
+	}
+}
+
+html,
+body {
+	height: 95%;
+}
+
+.App-header {
+	background-color: #282c34;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
+}
+
+.App-link {
+	color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.resource-panel {
+	position: relative;
+	top: 0;
+	left: 0;
+	display: flex;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	flex-direction: column;
+	align-items: start;
+	justify-content: flex-start;
+	/* gap: 1rem; */
+	font-size: 40px;
+	/* border: 3px solid black; */
+	width: 10%;
+	margin: 0px;
+}
+
+.resource-panel-item {
+	display: flex;
+	flex-direction: row;
+	margin-block-end: 0rem;
+	margin-block-start: 0rem;
+	min-width: 100%;
+	width: fit-content;
+	/* align-items: center; */
+	align-self: left;
+	justify-content: left;
+	/* border: 2px solid black; */
+	padding: 1rem;
+}
+
+.board {
+	padding: 10px;
+	/* display: flex; */
+	height: 100%;
+	/* height: fill-available; */
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.top-panel {
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+	height: 45%;
+	gap: 1rem;
+}
+
+.middle-panel {
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+	height: 45%;
+	gap: 1rem;
+}
+
+.play-area {
+	position: absolute;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	margin-left: 20%;
+	margin-top: 0%;
+	margin-bottom: 0%;
+	width: 60%;
+	max-width: 700px;
+	font-size: 40px;
+	width: fit-content;
+}
+
+.permanent-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	margin-left: 0%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	width: 100%;
+	max-width: 700px;
+	gap: 1em;
+	align-items: start;
+	justify-content: flex-start;
+	font-size: 40px;
+	width: fit-content;
+}
+
+
+.permanent {
+	border: 3px solid black;
+	background-color: white;
+	padding: 1em;
+	justify-content: center;
+	display: flex;
+	flex-direction: column;
+	width: 60px;
+	min-width: 60px;
+	height: 60px;
+	gap: 1rem;
+	margin: 10px;
+	vertical-align: center;
+}
+
+.middle-panel {
+	position: relative;
+	border: 3px solid black;
+	top: 5%;
+	bottom: 5%;
+	left: 0;
+	width: 100%;
+	display: flexbox;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	height: 20%;
+	gap: 1rem;
+}
+
+
+.played-cards-area {
+	border: 2px solid green;
+	position: relative;
+	left: 0;
+	margin: 10px;
+	display: flex;
+	width: 80%;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	vertical-align: center;
+	height: 80%;
+	gap: -1rem;
+}
+
+.card-container {
+	display: flex;
+	border: 3px dashed black;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 95%;
+	min-width: 100px;
+	height: 300px;
+	gap: 1rem;
+	margin-top: auto;
+	margin-bottom: 10px;
+}
+
+.card {
+	--scale_value: 1;
+	border: 3px solid black;
+	background-color: white;
+	border-radius: 10px;
+	padding: 1rem;
+	justify-content: center;
+	display: flex;
+	flex-direction: column;
+	width: 110px;
+	height: 210px;
+	margin: auto;
+	vertical-align: center;
+	transform: scale(var(--scale_value));
+}
+
+.card-small {
+	--scale_value: 0.5;
+}
+
+.card:hover {
+	/* background-color: #61dafb; */
+	/* border-color: greenyellow; */
+	cursor: pointer;
+	/* transform: scale(1.1); */
+	/* transition: transform 0.04s ease-in-out; */
+}
+
+.card-cost {
+	margin-top: auto;
+	font-size: 20px;
+}
+
+.deck {
+	margin-left: 1rem;
+	border: 3px solid black;
+	width: 20%;
+	height: 90%;
+	vertical-align: center;
+}
+
+.hand {
+	border: 3px solid black;
+	justify-content: center;
+	display: flex;
+	flex-direction: row;
+	width: 60%;
+	height: 90%;
+	vertical-align: center;
+}
+
+.discard {
+	margin-right: 1rem;
+	border: 3px solid black;
+	justify-content: center;
+	width: 20%;
+	height: 90%;
+}
+
+.input-container {
+	position: fixed;
+	width: 70%;
+	height: 70%;
+	top: 15%;
+	left: 15%;
+	right: 15%;
+	bottom: 15%;
+	opacity: 100%;
+	border-radius: 1rem;
+	border-color: black;
+	border-style: double;
+	background-color: white;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	display: flex;
+	flex-direction: column;
+}
+
+.input-option {
+	border: 3px solid black;
+	background-color: white;
+	font-size: 40px;
+	display: flex;
+	width: 60%;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	margin: auto
+}
+
+.input-button {
+	width: 30%;
+	min-height: 20px;
+	background-color: white;
+	margin: auto;
+	align-items: center;
+	font-size: 30px;
+}
