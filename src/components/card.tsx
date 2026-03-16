@@ -1,4 +1,4 @@
-import { type Resources, ResourceIcons, type Card, ResourcesZero } from "../types/board";
+import { type Resources, ResourceIcons, type Card, ResourcesZero, type AbstractCard } from "../types/board";
 import React, { useState } from "react";
 import { gameRunManager } from '../services/run_manager'
 import { useSyncExternalStore } from 'react'
@@ -27,6 +27,7 @@ export const CardClass = ({ card, renderOnly = false, useSmallSize = false }: { 
 			)
 		}
 	}
+
 	const isPlayable = isCardPlayable(card, gameState.resources);
 
 
@@ -47,7 +48,6 @@ export const CardClass = ({ card, renderOnly = false, useSmallSize = false }: { 
 		cursor: renderOnly ? "default" : isHovered ? isPlayable ? "pointer" : "not-allowed" : "pointer",
 		margin: renderOnly ? "20px" : "auto",
 	}
-	console.log(card.name, fontSize)
 
 	return (
 		<>

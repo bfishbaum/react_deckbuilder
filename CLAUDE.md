@@ -1,106 +1,91 @@
+# CLAUDE.md
 
-Default to using Bun instead of Node.js.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
+## Development Commands
 
-## APIs
+- **Development server**: `bun --hot src/index.ts` - Runs the development server with hot module reloading
+- **Production server**: `NODE_ENV=production bun src/index.ts` - Runs the production server
+- **Build**: `bun run build.ts` - Builds the application (script referenced but not found)
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+## Architecture Overview
 
-## Testing
+This is a card-based strategy game built with React and Bun. The game features a deck-building mechanism with multiple phases and complex game logic.
 
-Use `bun test` to run tests.
+### Core Game Loop
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
+1. **Pre-game Phase** (`RunPhase.PRE_GAME`): Character selection and game setup
+2. **Playing Phase** (`RunPhase.PLAYING`): Draw cards, play cards, manage resources
+3. **Shop Phase** (`RunPhase.SHOP`): Purchase new cards with gold
+4. **Post-game Phase** (`RunPhase.POST_GAME`): Game over state
 
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+### Key State Management
+
+- **GameRunManager**: Main orchestrator managing overall game state and transitions between phases
+- **LogicManager**: Handles in-game logic (card play, resource management, turn end)
+- **ShopManager**: Manages the shop phase and card purchasing
+
+### Data Flow Pattern
+
+The game uses a centralized state management pattern with external store subscriptions:
+
+```tsx
+// React components subscribe to state changes
+const gameState = useSyncExternalStore(gameRunManager.logicManager.subscribe, gameRunManager.logicManager.getSnapshot);
 ```
 
-## Frontend
+### Card System
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+- **AbstractCard**: Card definition with name, text, cost, price, effects, and tags
+- **Card**: AbstractCard with a unique id
+- **Card effects**: Pure functions that take GameState and return GameState
+- **Card index**: Central registry of all available cards
 
-Server:
+### Resource System
 
-```ts#index.ts
-import index from "./index.html"
+Five resource types: food, energy, wood, metal, gold. Each card costs specific resources to play and can be bought with gold.
 
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
-```
+### Component Structure
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+- **PhaseManager**: Routes to different game phases
+- **BoardClass**: Main game board with resource panel, play area, hand
+- **CardContainer**: Displays hand of playable cards
+- **Input/CardInput**: Modal dialogs for user inputs and choices
+- **ShopComponent**: Shop interface for purchasing cards
 
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
+### Effects System
 
-With the following `frontend.tsx`:
+Cards can have multiple effects that are added to a stack and executed sequentially. Common effects include:
+- Resource addition/subtraction
+- Card drawing
+- Input prompts for player choices
 
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
+### Notable Patterns
 
-// import .css files directly and it works
-import './index.css';
+- Cards are created using `makeCard(cardDefinition)` to add unique IDs
+- State changes use object spreading to trigger React updates
+- Game phases transition through explicit method calls (`endTurn()`, `endShop()`, etc.)
 
-const root = createRoot(document.body);
+### Styling
 
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
+- Heavy use of inline styles with Tailwind CSS classes
+- CSS globals in `styles/App.css` for board layout and card styling
+- No traditional CSS framework - custom layout with flexbox
 
-root.render(<Frontend />);
-```
+### Dependencies
 
-Then, run index.ts
+- Bun for runtime and bundling
+- React with createRoot for rendering
+- Radix UI components for accessible UI primitives
+- UUID for card generation
+- Lucide React for icons
 
-```sh
-bun --hot ./index.ts
-```
+### Important Files
 
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+- `src/index.ts`: Bun server with routes and HMR
+- `src/frontend.tsx`: React app entry point with hot module reloading
+- `src/services/run_manager.ts`: Game phase and overall state management
+- `src/services/logic_manager.ts`: In-game logic and card playing
+- `src/types/board.ts`: Core TypeScript interfaces and types
+- `src/services/card_index.ts`: Registry of all card definitions
+- `src/components/`: React components for game UI

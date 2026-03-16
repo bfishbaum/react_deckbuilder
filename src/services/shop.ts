@@ -2,8 +2,19 @@ import { type AbstractCard, type CardInputType } from "../types/board";
 import { cardList } from "./card_list";
 import { allowLTESelectionsCard } from "./effects/input";
 import { addCardToDeck } from "./effects/effect";
+import { makeCard } from "./effects/make_card";
+import { pickNWithReplacement } from "./utils";
 
 export type AbstractCardFilter = (card: AbstractCard) => boolean;
+
+export const isBasicCard = (card: AbstractCard) => {
+	return card.tags.includes("BASIC");
+}
+
+export const isNotBasicCard = (card: AbstractCard) => {
+	return !card.tags.includes("BASIC");
+}
+
 
 export const filterByPrice = (min: number, max: number) => {
 	return (card: AbstractCard) => {
@@ -16,7 +27,7 @@ export const filterCards = (filters: AbstractCardFilter[]) => {
 }
 
 export const getSomeCards = (k: number, filters: AbstractCardFilter[]) => {
-	return filterCards(filters).slice(0, k);
+	return pickNWithReplacement(filterCards(filters), k).map(makeCard);
 }
 
 export const createShopInputByFilters = (filters: AbstractCardFilter[]) => {
@@ -35,3 +46,5 @@ export const createShopInputByFilters = (filters: AbstractCardFilter[]) => {
 		canCancel: true
 	}
 }
+
+export const BASIC_CARDS = filterCards([k => k.tags.includes("BASIC")]);

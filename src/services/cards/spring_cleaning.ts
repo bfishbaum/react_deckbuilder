@@ -2,6 +2,7 @@ import { type GameState, type AbstractCard, type CardInputType } from "../../typ
 import { allowAnySelectionsCard, setCardInputEffect } from "../effects/input";
 
 const input = (state: GameState): CardInputType => {
+	console.log(state.cardState.hand);
 	return {
 		text: "Select any number of cards to remove",
 		options: [

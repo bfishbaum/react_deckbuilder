@@ -21,7 +21,6 @@ const InputOption = ({ option, isSelected, index, selectFn }: { option: string, 
 	}
 	return (
 		<>
-
 			<div style={style} className="input-option" onClick={() => {
 				selectFn();
 			}}>

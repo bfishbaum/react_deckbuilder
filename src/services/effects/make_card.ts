@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 export const makeCard = (abstractCard: AbstractCard): Card => {
 	return {
-		id: uuid(),
 		...abstractCard,
+		id: uuid(),
 	}
 }

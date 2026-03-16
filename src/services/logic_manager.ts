@@ -50,7 +50,7 @@ export class LogicManager extends React.Component {
 			console.log("Can't play more cards until input decided")
 			return;
 		}
-		console.log("played card");
+		console.log("played card", cardKey);
 		const cardIndex: number = this.gameState.cardState.hand.findIndex((card) => card.id === cardKey);
 		if (cardIndex === -1) {
 			return;
@@ -64,7 +64,7 @@ export class LogicManager extends React.Component {
 		this.gameState.cardState.hand.splice(cardIndex, 1);
 		this.gameState.resources = subResources(this.gameState.resources, card.cost); this.gameState.stack.push(...card.effect);
 		this.evaluate();
-		this.gameState.inPlay.push(card);
+		this.gameState.cardState.inPlay.push(card);
 		this.notify();
 	}
 
@@ -99,6 +99,10 @@ export class LogicManager extends React.Component {
 		this.notify();
 	}
 
+	public logGameState = (): void => {
+		console.log(this.gameState);
+	}
+
 	public toggleCardInputSelection = (index: number): void => {
 		if (!this.gameState.cardInput) {
 			console.log("No card input to toggle");
@@ -127,13 +131,17 @@ export class LogicManager extends React.Component {
 			...this.gameState.cardState.deck,
 			...this.gameState.cardState.hand,
 			...this.gameState.cardState.discard,
-			...this.gameState.inPlay,
+			...this.gameState.cardState.inPlay,
 		]
 	}
 
 
 	public endTurn = (): void => {
-		this.gameState.cardState.deck = this.getFullDeck();
+		this.gameState.cardState = {
+			...this.gameState.cardState,
+			discard: [...this.gameState.cardState.discard, ...this.gameState.cardState.inPlay],
+			inPlay: [],
+		}
 		this.notify();
 	}
 

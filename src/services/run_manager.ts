@@ -11,6 +11,11 @@ import React from "react";
 import { LogicManager } from "./logic_manager";
 import { ShopManager } from "./shop_manager";
 
+export type GameSettings = {
+	startingDeck: Card[];
+	startingResources: Resources;
+	startingHandSize: number;
+}
 
 export enum RunPhase {
 	PRE_GAME,
@@ -26,29 +31,32 @@ export interface GameRun {
 	runPhase: RunPhase;
 }
 
-const startingDeck: Card[] = [
-	...Array.from({ length: 7 }, () => makeCard(cards.Copper)),
-	...Array.from({ length: 3 }, () => makeCard(cards.Silver)),
+
+const STARTING_DECK: Card[] = [
+	...Array.from({ length: 3 }, () => makeCard(cards.FoodCoin)),
+	...Array.from({ length: 3 }, () => makeCard(cards.Forage)),
+	...Array.from({ length: 3 }, () => makeCard(cards.Gold)),
 ];
 
-const initialResources: Resources = {
-	food: 3,
+const INITIAL_RESOURCES: Resources = {
+	food: 5,
 	energy: 0,
 	wood: 0,
 	metal: 0,
 	gold: 0,
 }
+const STARTING_HAND_SIZE = 5;
 
 const initalGameState: GameState = {
-	resources: initialResources,
+	resources: INITIAL_RESOURCES,
 	stack: [],
 	board: [],
 	cardState: {
-		deck: [...startingDeck],
+		deck: [...STARTING_DECK],
 		hand: [],
 		discard: [],
+		inPlay: []
 	},
-	inPlay: [],
 	input: undefined,
 }
 
@@ -63,8 +71,8 @@ class GameRunManager {
 			gameState: {
 				...initalGameState,
 			},
-			fullDeck: [...startingDeck],
-			resources: initialResources,
+			fullDeck: [...STARTING_DECK],
+			resources: INITIAL_RESOURCES,
 			runPhase: RunPhase.PRE_GAME,
 		}
 		this.logicManager = new LogicManager(this.gameRun.gameState);
@@ -82,6 +90,10 @@ class GameRunManager {
 		return this.gameRun;
 	}
 
+	public logGameState = (): void => {
+		this.logicManager.logGameState();
+	}
+
 	private notify = (): void => {
 		// Force modification
 		this.gameRun = {
@@ -91,23 +103,53 @@ class GameRunManager {
 	}
 
 	public endTurn = (): void => {
+		console.log("ending turn");
+		this.logicManager.endTurn();
+		const gameState = this.logicManager.getSnapshot();
 		this.gameRun = {
 			...this.gameRun,
 			fullDeck: this.logicManager.getFullDeck(),
-			gameState: this.logicManager.getSnapshot(),
+			gameState,
 			runPhase: RunPhase.SHOP,
+		}
+		this.shopManager.setUp(gameState.resources.gold)
+		this.notify();
+	}
+
+	public endShop = (): void => {
+		const shopState = this.shopManager.getSnapshot();
+		let gameState = {
+			...this.gameRun.gameState,
+			cardState: {
+				...this.gameRun.gameState.cardState,
+				hand: [] as Card[],
+				discard: [...this.gameRun.gameState.cardState.discard, ...this.gameRun.gameState.cardState.hand, ...shopState.boughtCards],
+			},
+			resources: {
+				...this.gameRun.gameState.resources,
+				gold: shopState.gold,
+			},
+		}
+		gameState = drawCards(STARTING_HAND_SIZE)(gameState);
+		this.logicManager.setGameState(gameState);
+		this.notify();
+		this.gameRun = {
+			...this.gameRun,
+			gameState,
+			runPhase: RunPhase.PLAYING,
 		}
 		this.notify();
 	}
 
 	public startGame = (): void => {
-		this.logicManager.setGameState(drawCards(5)(initalGameState));
+		this.logicManager.setGameState(drawCards(STARTING_HAND_SIZE)(initalGameState));
 		this.gameRun = {
 			...this.gameRun,
 			runPhase: RunPhase.PLAYING,
 		}
 		this.notify();
 	}
+
 }
 
 export const gameRunManager: GameRunManager = new GameRunManager();

@@ -1,4 +1,5 @@
-import { type GameState, type InputType, type CardInputType } from "../../types/board";
+import { type GameState, type AbstractCard, type InputType, type CardInputType } from "../../types/board";
+import { makeCard } from "./make_card";
 
 export const allowAnySelections = (input: InputType) => {
 	return true;
@@ -31,10 +32,34 @@ export const setInputEffect = (input: InputType) => (state: GameState) => {
 	};
 }
 
-export const setCardInputEffect = (input: CardInputType) => (state: GameState) => {
+export const setCardInputEffect = (input: CardInputType | undefined) => (state: GameState) => {
 	return {
 		...state,
-		cardInput: Object.assign({}, input),
+		cardInput: input ? Object.assign({}, input) : undefined
 	};
 }
 
+export const setCardInputEffectLazy = (input: () => CardInputType) => (state: GameState) => {
+	return {
+		...state,
+		cardInput: input()
+	};
+}
+
+
+export const makePickOneInput = (cards: AbstractCard[]) => {
+	return {
+		text: "Select one",
+		options: cards.map(makeCard),
+		selections: cards.map(() => false),
+		selectionCriteria: allowEQSelectionsCard(1),
+		offerConfirm: (input: CardInputType) => {
+			return false;
+		},
+		outputFunction: (input: CardInputType) => {
+			return input.options[input.selections.indexOf(true)]?.effect ?? [];
+		},
+		cancelText: "Cancel",
+		canCancel: true
+	}
+}

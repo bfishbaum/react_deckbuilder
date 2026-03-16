@@ -3,10 +3,17 @@ export interface GameState {
 	stack: Effect[];
 	board: Card[];
 	cardState: CardState;
-	inPlay: Card[];
 	input?: InputType
 	cardInput?: CardInputType
 }
+
+export interface CardState {
+	deck: Card[];
+	hand: Card[];
+	discard: Card[];
+	inPlay: Card[];
+}
+
 export type Effect = (state: GameState) => GameState;
 
 export type AbstractCard = {
@@ -23,12 +30,15 @@ export type AbstractCard = {
 
 export type Card = AbstractCard & {
 	id: string;
-	name: string;
-	text: string;
-	cost: Resources;
-	// Can add multiple effects to the stack
-	effect: Effect[]
-	tags: string[]
+}
+
+export const EMPTY_CARD: AbstractCard = {
+	name: "",
+	text: "",
+	price: { food: 0, energy: 0, wood: 0, metal: 0, gold: 0 },
+	cost: { food: 0, energy: 0, wood: 0, metal: 0, gold: 0 },
+	effect: [],
+	tags: []
 }
 
 export type ResourceKey = "food" | "energy" | "wood" | "metal" | "gold"
@@ -57,11 +67,7 @@ export const WOOD_ICON = "🪵"
 export const METAL_ICON = "⚙️"
 export const GOLD_ICON = "💰"
 
-export interface CardState {
-	deck: Card[];
-	hand: Card[];
-	discard: Card[];
-}
+
 
 export interface InputType {
 	text?: string

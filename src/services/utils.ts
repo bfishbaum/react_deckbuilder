@@ -1,4 +1,4 @@
-import { type Resources } from "../types/board";
+import { type Resources, type Card } from "../types/board";
 
 export const sumResources = (resources: Resources[]) => {
 	return resources.reduce((a, b) => {
@@ -23,6 +23,27 @@ export const subResources = (r1: Resources, r2: Resources): Resources => {
 	return sumResources([r1, negResources(r2)])
 }
 
+export function cutOutValue<T>(list: T[], value: T) {
+	const idx = list.findIndex(c => (c == value));
+	if (idx < 0) {
+		return undefined
+	}
+	return {
+		item: value,
+		list: [...list.slice(0, idx), ...list.slice(idx + 1)]
+	}
+}
+
+export function cutOutIndex<T>(list: T[], idx: number) {
+	if (idx > list.length) {
+		return undefined
+	}
+	return {
+		item: list[idx] as T,
+		list: [...list.slice(0, idx), ...list.slice(idx + 1)]
+	}
+}
+
 // Fisher-Yates shuffle
 export const shuffle = (array: any[]): any[] => {
 	let currentIndex = array.length, randomIndex;
@@ -44,4 +65,12 @@ export const shuffle = (array: any[]): any[] => {
 // Random int between 0 and n-1
 export const randomInt = (n: number): number => {
 	return Math.floor(Math.random() * n);
+}
+
+export const pickNWithReplacement = (list: any[], n: number): any[] => {
+	return Array.from({ length: n }).map(() => list[randomInt(list.length)])
+}
+
+export const capitalize = (str: string): string => {
+	return str.charAt(0).toUpperCase() + str.slice(1);
 }

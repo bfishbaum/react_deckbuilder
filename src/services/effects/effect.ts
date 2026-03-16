@@ -1,5 +1,5 @@
 import { type AbstractCard, type GameState, type Resources, type ResourceKey, type Card } from "../../types/board";
-import { sumResources, negResources, randomInt } from "../utils";
+import { sumResources, negResources, randomInt, cutOutValue, cutOutIndex } from "../utils";
 import { makeCard } from "./make_card";
 
 export const addResources = (resources: Resources) => (state: GameState) => {
@@ -26,7 +26,7 @@ export const addResource = (resource: ResourceKey, amount: number) => (state: Ga
 	}
 }
 
-export const drawCard = (state: GameState) => {
+export const drawCard = (state: GameState): GameState => {
 	// shuffle discard into deck if needed
 	if (state.cardState.deck.length === 0) {
 		state.cardState.deck.push(...state.cardState.discard);
@@ -37,12 +37,16 @@ export const drawCard = (state: GameState) => {
 		return state;
 	}
 	const randomIndex = randomInt(state.cardState.deck.length);
-	const drawnCard = state.cardState.deck.splice(randomIndex, 1)[0] as Card;
+	const split = cutOutIndex<Card>(state.cardState.deck, randomIndex)
+	if (!split) {
+		return state;
+	}
 	return {
 		...state,
 		cardState: {
 			...state.cardState,
-			hand: [...state.cardState.hand, drawnCard],
+			deck: split.list,
+			hand: [...state.cardState.hand, split.item],
 		}
 	}
 }
@@ -59,12 +63,16 @@ export const discardRandomCard = (state: GameState) => {
 		return state;
 	}
 	const randomIndex = randomInt(state.cardState.hand.length);
-	const discardedCard = state.cardState.hand.splice(randomIndex, 1)[0] as Card;
+	const split = cutOutIndex<Card>(state.cardState.hand, randomIndex);
+	if (!split) {
+		return state;
+	}
 	return {
 		...state,
 		cardState: {
 			...state.cardState,
-			discard: [...state.cardState.discard, discardedCard],
+			hand: split.list,
+			discard: [...state.cardState.discard, split.item],
 		}
 	}
 }

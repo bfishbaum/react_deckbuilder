@@ -9,9 +9,9 @@ export const Fetch: AbstractCard = {
 	name: "Fetch",
 	text: "Draw 2 cards",
 	cost: { food: 1, energy: 0, wood: 0, metal: 0, gold: 0 },
-	price: { food: 0, energy: 0, wood: 0, metal: 0, gold: 5 },
+	price: { food: 0, energy: 0, wood: 0, metal: 0, gold: 3 },
 	effect: [drawCards(2)],
-	tags: [""]
+	tags: []
 }
 
 export const Forage: AbstractCard = {
@@ -20,14 +20,14 @@ export const Forage: AbstractCard = {
 	cost: { food: 1, energy: 0, wood: 0, metal: 0, gold: 0 },
 	price: { food: 0, energy: 0, wood: 0, metal: 0, gold: 5 },
 	effect: [drawCards(3)],
-	tags: [""]
+	tags: []
 }
 
 export const Hoard: AbstractCard = {
 	name: "Hoard",
 	text: "Draw 4 cards",
-	cost: { food: 1, energy: 0, wood: 0, metal: 0, gold: 0 },
+	cost: { food: 2, energy: 0, wood: 0, metal: 0, gold: 0 },
 	price: { food: 0, energy: 0, wood: 0, metal: 0, gold: 7 },
 	effect: [drawCards(4)],
-	tags: [""]
+	tags: []
 }

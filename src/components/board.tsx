@@ -26,6 +26,11 @@ export const BoardClass = () => {
 					}}>
 						End Turn
 					</div>
+					<div style={{ border: '3px solid black', color: 'black', fontSize: '20px', padding: '10px', paddingLeft: '20px', paddingRight: '20px', borderRadius: '5px' }} onClick={() => {
+						gameRunManager.logGameState();
+					}}>
+						Log Game State
+					</div>
 				</div>
 				{/* <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'left', scale: 0.5 }}>
 					{gameState.inPlay.map((card, index) => (

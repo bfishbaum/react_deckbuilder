@@ -12,7 +12,7 @@ const optionContainerStyle: React.CSSProperties = {
 	alignItems: "center",
 	justifyContent: "center",
 	margin: "auto",
-	gap: "1rem",
+	gap: "1rem"
 }
 
 const CardInputOption = ({ option, isSelected, index, selectFn }: { option: Card, isSelected: boolean, index: number, selectFn: () => void }) => {
